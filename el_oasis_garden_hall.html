@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El Oasis &middot; Garden &amp; Grounds</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0e1a0e;
+  --surface:#1a2e1a;
+  --gold:#c8a96e;
+  --gold-dim:rgba(200,169,110,0.12);
+  --gold-line:rgba(200,169,110,0.28);
+  --text:#e8dcc8;
+  --text-dim:#8a7a5a;
+  --white:#f5f0e8;
+  --radius:2px;
+  --col:1100px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Josefin Sans',sans-serif;font-weight:300;}
+
+header{background:var(--surface);border:1px solid var(--gold-line);border-bottom:none;padding:3rem 3rem 2.5rem;max-width:var(--col);margin:0 auto;}
+.eyebrow{font-size:0.6rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:0.8rem;}
+.back-link{display:inline-flex;align-items:center;gap:0.4rem;font-size:0.58rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--text-dim);text-decoration:none;margin-bottom:1.2rem;transition:color 0.2s;}
+.back-link:hover{color:var(--gold);}
+header h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3rem);font-weight:300;color:var(--white);line-height:1.1;margin-bottom:0.6rem;}
+header h1 em{font-style:italic;color:var(--gold);}
+.header-intro{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-style:italic;line-height:1.75;color:var(--text-dim);max-width:620px;margin-top:1rem;border-left:2px solid var(--gold-line);padding-left:1.2rem;}
+.gold-rule{width:48px;height:1px;background:var(--gold);margin:1.5rem 0 0;opacity:0.5;}
+
+main{max-width:var(--col);margin:0 auto;background:var(--surface);border-left:1px solid var(--gold-line);border-right:1px solid var(--gold-line);padding:3rem;}
+
+.sub-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));gap:1.4rem;}
+
+.sub-card{position:relative;background:linear-gradient(160deg, rgba(255,255,255,0.035), rgba(255,255,255,0.01));border:1px solid var(--gold-line);border-radius:var(--radius);padding:2rem 1.7rem;text-decoration:none;color:inherit;display:block;transition:border-color 0.4s ease, transform 0.4s ease, background 0.4s ease;overflow:hidden;}
+.sub-card::before{content:'';position:absolute;top:0;left:0;width:2px;height:0;background:var(--gold);transition:height 0.45s ease;}
+.sub-card:hover{border-color:rgba(200,169,110,0.55);background:linear-gradient(160deg, rgba(255,255,255,0.06), rgba(255,255,255,0.015));transform:translateY(-3px);}
+.sub-card:hover::before{height:100%;}
+.sub-card .sub-num{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:0.9rem;color:var(--gold);opacity:0.75;margin-bottom:0.9rem;display:block;}
+.sub-card h3{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:500;color:var(--white);margin-bottom:0.5rem;}
+.sub-card p{font-size:0.82rem;line-height:1.55;color:var(--text-dim);}
+.sub-card .sub-arrow{display:inline-block;margin-top:1.1rem;font-size:0.65rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);}
+.sub-card .sub-arrow::after{content:' \2192';display:inline-block;transition:transform 0.3s ease;}
+.sub-card:hover .sub-arrow::after{transform:translateX(4px);}
+
+.sub-card.placeholder{opacity:0.45;cursor:default;}
+.sub-card.placeholder:hover{transform:none;border-color:var(--gold-line);background:linear-gradient(160deg, rgba(255,255,255,0.035), rgba(255,255,255,0.01));}
+.sub-card.placeholder:hover::before{height:0;}
+.sub-card.placeholder .sub-arrow{color:var(--text-dim);}
+
+footer{max-width:var(--col);margin:0 auto;border:1px solid var(--gold-line);border-top:none;padding:1.5rem 2rem;text-align:center;font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);background:var(--surface);}
+footer span{color:var(--gold);}
+
+@media(max-width:800px){
+  header{padding:2rem 1.2rem;}
+  main{padding:2rem 1.2rem;}
+}
+</style>
+</head>
+<body>
+<header>
+<a class="back-link" href="el_oasis_lobby_9_1.html">&larr; Back to Lobby</a>
+<div class="eyebrow">Condominio El Oasis &middot; Playa Hermosa &middot; Guanacaste</div>
+<h1>Garden <em>&amp; Grounds</em></h1>
+<p class="header-intro">The plants, the visitors, and the record of what has been observed &mdash; documented across the property's dry-forest garden.</p>
+<div class="gold-rule"></div>
+</header>
+<main>
+<div class="sub-grid">
+
+  <a class="sub-card" href="ElOasis_PlantInventory_v9_1.html">
+    <span class="sub-num">I</span>
+    <h3>Plant Inventory</h3>
+    <p>Species documented, assessed, and recommended across the garden boundary. Currently at v9, 62+ photo references.</p>
+    <span class="sub-arrow">Enter</span>
+  </a>
+
+  <a class="sub-card" href="ElOasis_FieldLog_v5.html">
+    <span class="sub-num">II</span>
+    <h3>Field Log</h3>
+    <p>Visitor, host, and behavior &mdash; interactions recorded in the garden across the seasons. 32 entries documented.</p>
+    <span class="sub-arrow">Enter</span>
+  </a>
+
+  <a class="sub-card" href="butterfly_catalogue_v4_1.html">
+    <span class="sub-num">III</span>
+    <h3>Butterflies</h3>
+    <p>Lepidoptera of the garden, photographed and identified through the seasons. 19 photographs, 14 species, 3 families.</p>
+    <span class="sub-arrow">Enter</span>
+  </a>
+
+  <a class="sub-card" href="birds_catalogue_v3.html">
+    <span class="sub-num">IV</span>
+    <h3>Birds</h3>
+    <p>Garden residents and coastal visitors, from grackles to pelicans. 17 photographs, 14 species, 9 families.</p>
+    <span class="sub-arrow">Enter</span>
+  </a>
+
+  <a class="sub-card" href="flowers_catalogue_v4.html">
+    <span class="sub-num">V</span>
+    <h3>Flowers</h3>
+    <p>The garden's bloom calendar, month by month. 36 photographs, 26 species, 17 families.</p>
+    <span class="sub-arrow">Enter</span>
+  </a>
+
+  <a class="sub-card" href="other_catalogue_v2.html">
+    <span class="sub-num">VI</span>
+    <h3>Other Life</h3>
+    <p>Mammals, reptiles, insects, and invertebrates &mdash; the ambient fauna of the grounds. 18 entries, 16 taxa.</p>
+    <span class="sub-arrow">Enter</span>
+  </a>
+
+  <a class="sub-card" href="el_oasis_pool.html">
+    <span class="sub-num">VII</span>
+    <h3>Pool &amp; Deck</h3>
+    <p>The pool, its planted island, and the dawn upkeep that keeps it running.</p>
+    <span class="sub-arrow">Enter</span>
+  </a>
+
+</div>
+</main>
+<footer><span>El Oasis</span> &middot; Garden &amp; Grounds &middot; Playa Hermosa, Guanacaste</footer>
+</body>
+</html>

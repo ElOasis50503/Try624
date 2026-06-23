@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Littoral Checklist — El Oasis Tides</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Josefin+Sans:wght@100;300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --jungle:#1a2e1a;
+  --canopy:#243824;
+  --moss:#2f4a2f;
+  --gold:#c8a84b;
+  --gold-soft:#e3cd8a;
+  --cream:#f0ead8;
+  --text-dim:rgba(240,234,216,0.58);
+  --sea:#7fb5a8;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background-color:var(--jungle);
+  color:var(--cream);
+  font-family:'Josefin Sans',sans-serif;
+  font-weight:300;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 20% 15%, rgba(127,181,168,0.10) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 85% 85%, rgba(36,56,36,0.3) 0%, transparent 60%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;
+  z-index:0;
+}
+header{
+  position:relative;
+  z-index:10;
+  text-align:center;
+  padding:4.2rem 2rem 3rem;
+  border-bottom:1px solid rgba(200,168,75,0.2);
+}
+.back-link{
+  display:inline-flex;
+  align-items:center;
+  gap:.4rem;
+  font-size:.6rem;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--text-dim);
+  text-decoration:none;
+  margin-bottom:1.6rem;
+  transition:color .2s;
+}
+.back-link:hover{color:var(--gold)}
+.eyebrow{
+  font-size:.62rem;
+  letter-spacing:.32em;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:1rem;
+}
+h1{
+  font-family:'Cormorant Garamond',serif;
+  font-weight:300;
+  font-size:clamp(2.6rem,6vw,4.2rem);
+  letter-spacing:.03em;
+  color:var(--cream);
+  line-height:1.1;
+}
+.hall-rule{
+  width:54px;
+  height:1px;
+  background:var(--gold);
+  margin:1.3rem auto;
+  opacity:.6;
+}
+.hall-intro{
+  max-width:600px;
+  margin:0 auto;
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;
+  font-weight:300;
+  font-size:1.1rem;
+  line-height:1.7;
+  color:var(--text-dim);
+}
+main{
+  position:relative;
+  z-index:10;
+  max-width:880px;
+  margin:0 auto;
+  padding:3.5rem 2rem 2rem;
+}
+.zones-strip{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:1.6rem;
+  background:rgba(255,255,255,0.025);
+  border:1px solid rgba(200,168,75,0.16);
+  border-radius:3px;
+  padding:1.1rem 1.6rem;
+  margin-bottom:3.2rem;
+  font-size:.7rem;
+  letter-spacing:.04em;
+  color:var(--text-dim);
+}
+.zones-strip strong{color:var(--gold-soft); font-weight:500}
+.group{margin-bottom:3rem}
+.group-label{
+  font-size:.66rem;
+  letter-spacing:.3em;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:1rem;
+  padding-bottom:.7rem;
+  border-bottom:1px solid rgba(200,168,75,0.18);
+}
+.species-row{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:1rem;
+  padding:.7rem 0;
+  border-bottom:1px solid rgba(255,255,255,0.05);
+}
+.species-row:last-child{border-bottom:none}
+.species-names{flex:1; min-width:0}
+.common-name{
+  font-family:'Cormorant Garamond',serif;
+  font-weight:500;
+  font-size:1.18rem;
+  color:var(--cream);
+}
+.latin-name{
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;
+  font-size:.95rem;
+  color:var(--text-dim);
+  margin-left:.6rem;
+}
+.zone-tag{
+  flex-shrink:0;
+  font-size:.62rem;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--sea);
+  white-space:nowrap;
+  text-align:right;
+}
+.season-panel{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));
+  gap:1.4rem;
+  margin:3rem 0 1rem;
+}
+.season-card{
+  background:var(--canopy);
+  border:1px solid var(--moss);
+  border-radius:2px;
+  padding:1.6rem 1.7rem;
+}
+.season-card h3{
+  font-family:'Cormorant Garamond',serif;
+  font-weight:500;
+  font-size:1.3rem;
+  color:var(--gold-soft);
+  margin-bottom:.6rem;
+}
+.season-card p{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1rem;
+  line-height:1.6;
+  color:var(--text-dim);
+}
+.source-note{
+  max-width:680px;
+  margin:3rem auto 0;
+  text-align:center;
+  font-size:.72rem;
+  line-height:1.7;
+  color:var(--text-dim);
+  opacity:.75;
+  padding-top:2rem;
+  border-top:1px solid rgba(200,168,75,0.14);
+}
+footer{
+  position:relative;
+  z-index:10;
+  text-align:center;
+  padding:2.4rem;
+  font-size:.6rem;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:var(--text-dim);
+  border-top:1px solid rgba(200,168,75,0.15);
+}
+footer span{color:var(--gold)}
+@media(max-width:640px){
+  header{padding:3rem 1.5rem 2.2rem}
+  main{padding:2.5rem 1.2rem 2rem}
+  .species-row{flex-direction:column; align-items:flex-start; gap:.2rem}
+  .zone-tag{text-align:left}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="el_oasis_tides_hall.html">&larr; Back to Tides</a>
+  <div class="eyebrow">Hall IV &middot; Tides &middot; Sub III</div>
+  <h1>Littoral Checklist</h1>
+  <div class="hall-rule"></div>
+  <p class="hall-intro">Thirty-two species of the rocky intertidal at Playa Hermosa, grouped by taxon &mdash; a working record for what turns up between the tide lines.</p>
+</header>
+
+<main>
+
+  <div class="zones-strip">
+    <span><strong>Splash</strong> &mdash; above MHHW</span>
+    <span><strong>High</strong> &mdash; MHHW to MTL</span>
+    <span><strong>Mid</strong> &mdash; MTL to MLLW</span>
+    <span><strong>Low</strong> &mdash; MLLW to subtidal</span>
+    <span><strong>Pools</strong> &mdash; isolated at low tide</span>
+  </div>
+
+  <div class="group">
+    <div class="group-label">Barnacles</div>
+    <div class="species-row">
+      <div class="species-names"><span class="common-name">Volcano barnacle</span><span class="latin-name">Tetraclita stalactifera</span></div>
+      <div class="zone-tag">High / Mid</div>
+    </div>
+    <div class="species-row">
+      <div class="species-names"><span class="common-name">Striped barnacle</span><span class="latin-name">Balanus amphitrite</span></div>
+      <div class="zone-tag">Mid</div>
+    </div>
+    <div class="species-row">
+      <div class="species-names"><span class="common-name">Chthamalus barnacle</span><span class="latin-name">Chthamalus panamensis</span></div>
+      <div class="zone-tag">High</div>
+    </div>
+  </div>
+
+  <div class="group">
+    <div class="group-label">Gastropods</div>
+    <div class="species-row">
+      <div class="species-names"><span class="common-name">Owl limpet</span><span class="latin-name">Lottia gigantea</span></div>
+      <div class="zone-tag">High / Mid</div>
+    </div>
+    <div class="species-row">
+      <div class="species-names"><span class="common-name">Ribbed limpet</span><span class="latin-name">Scurria viridula</span></div>
+      <div class="zone-tag">Mid</div>
+    </div>
+    <div class="species-row">
+      <div class="species-names"><span class="common-name">Nerite</span><span class="latin-name">Nerita scabricosta</span></div>
+      <div class="zone-tag">High / Splash</div>
+    </div>
+    <div class="species-row">
+      <div class="species-names"><span class="common-name">Periwinkle</span><span class="latin-name">Littorina aspera</span></div>
+      <div class="zone-tag">Splash / High</div>
+    </div>
+    <div class="species-row">
+      <div class="species-names"><span class="common-name">Periwinkle</span><span class="latin-name">Littorina modesta</span></div>
+      <div class="zone-tag">High</div>
+    </div>
+    <div class="species-row">
+      <div class="species-names"><span class="common-name">Purpura snail</span><span class="latin-name">Plicopurpura pansa</span></div>
+      <div class="zone-tag">Mid</div>
+    </div>
+    <div class="species-row">
+      <div class="species-names"><span class="common-name">Dove snail</span><span class="latin-name">Columbella fuscata</span></div>
+      <div class="zone-tag">Low / Mid</div>
+    </div>
+    <div class="species-row">
+      <div class="species-names"><span class="common-name">Horn snail</span><span class="latin-name">Cerithium stercusmuscarum</span></div>
+      <div class="zone-tag">Low</div>
+    </div>
+    <div class="species-row">
+      <div class="species-names"><span class="common-name">Top shell</span><span class="latin-name">Tegula sp.</span></div>
+      <div class="zone-tag">Low / Mid</div>
+    </div>
+  </div>
+
+  <div class="group">
+    <div class="group-label">Bivalves</div>
+    <div class="species-row">
+      <div class="species-names"><span class="common-name">Ribbed mussel</span><span class="latin-name">Brachidontes semilaevis</span></div>
+      <div class="zone-tag">Mid / Low</div>
+    </div>
+    <div class="species-row">
+      <div class="species-names"><span class="common-name">Rock oyster</span><span class="latin-name">Saccostrea palmula</span></div>
+      <div class="zone-tag">Low / Mid</div>
+    </div>
+    <div class="species-row">
+      <div class="species-names"><span class="common-name">Chiton bivalve</span><span class="latin-name">Chama buddiana</span></div>
+      <div class="zone-tag">Low</div>
+    </div>
+  </div>
+
+  <div class="group">
+    <div class="group-label">Chitons</div>
+    <div class="species-row">
+      <div class="species-names"><span class="common-name">Chiton</span><span class="latin-name">Chiton articulatus</span></div>
+      <div class="zone-tag">Mid / Low</div>
+    </div>
+    <div class="species-row">
+      <div class="species-names"><span class="common-name">Chiton</span><span class="latin-name">Ischnochiton muscarius</span></div>
+      <div class="zone-tag">Low</div>
+    </div>
+  </div>
+
+  <div class="group">
+    <div class="group-label">Other Invertebrates</div>
+    <div class="species-row">
+      <div class="species-names"><span class="common-name">Sally lightfoot crab</span><span class="latin-name">Grapsus grapsus</span></div>
+      <div class="zone-tag">High / Splash</div>
+    </div>
+    <div class="species-row">
+      <div class="species-names"><span class="common-name">Hermit crab</span><span class="latin-name">Clibanarius panamensis</span></div>
+      <div class="zone-tag">Mid / Low</div>
+    </div>
+    <div class="species-row">
+      <div class="species-names"><span class="common-name">Purple sea urchin</span><span class="latin-name">Echinometra vanbrunti</span></div>
+      <div class="zone-tag">Low</div>
+    </div>
+    <div class="species-row">
+      <div class="species-names"><span class="common-name">Sea urchin</span><span class="latin-name">Arbacia incisa</span></div>
+      <div class="zone-tag">Low</div>
+    </div>
+    <div class="species-row">
+      <div class="species-names"><span class="common-name">Brittle star</span><span class="latin-name">Ophiocoma alexandri</span></div>
+      <div class="zone-tag">Low / Subtidal</div>
+    </div>
+    <div class="species-row">
+      <div class="species-names"><span class="common-name">Aggregating anemone</span><span class="latin-name">Bunodosoma californicum</span></div>
+      <div class="zone-tag">Mid / Low</div>
+    </div>
+    <div class="species-row">
+      <div class="species-names"><span class="common-name">Acorn worm / Polychaete</span><span class="latin-name">Various spp.</span></div>
+      <div class="zone-tag">Low</div>
+    </div>
+  </div>
+
+  <div class="group">
+    <div class="group-label">Macroalgae</div>
+    <div class="species-row">
+      <div class="species-names"><span class="common-name">Coralline algae (encrusting)</span><span class="latin-name">Lithophyllum sp.</span></div>
+      <div class="zone-tag">Mid / Low</div>
+    </div>
+    <div class="species-row">
+      <div class="species-names"><span class="common-name">Green alga</span><span class="latin-name">Ulva lactuca</span></div>
+      <div class="zone-tag">Mid / Low</div>
+    </div>
+    <div class="species-row">
+      <div class="species-names"><span class="common-name">Green alga</span><span class="latin-name">Chaetomorpha sp.</span></div>
+      <div class="zone-tag">Low / Pools</div>
+    </div>
+    <div class="species-row">
+      <div class="species-names"><span class="common-name">Red alga</span><span class="latin-name">Laurencia sp.</span></div>
+      <div class="zone-tag">Low / Pools</div>
+    </div>
+    <div class="species-row">
+      <div class="species-names"><span class="common-name">Cyanobacterial mat</span><span class="latin-name">Various spp.</span></div>
+      <div class="zone-tag">High / Splash</div>
+    </div>
+  </div>
+
+  <div class="season-panel">
+    <div class="season-card">
+      <h3>Dry Season &middot; Dec&ndash;Apr</h3>
+      <p>Upwelling active. Cooler sea-surface temperatures, higher salinity, increased productivity, and denser barnacle and limpet cover.</p>
+    </div>
+    <div class="season-card">
+      <h3>Wet Season &middot; May&ndash;Nov</h3>
+      <p>Upwelling reduced. Warmer sea-surface temperatures, algal bloom, expanded macroalgae, and greater gastropod mobility.</p>
+    </div>
+  </div>
+
+  <p class="source-note">Source: Sibaja-Cordero, J.A. &amp; Cort&eacute;s, J. (2008). Temporal variation in rocky intertidal communities, NW Costa Rica. <em>Revista de Biolog&iacute;a Tropical</em>, 56(Suppl. 4), 107&ndash;131. Bah&iacute;a Salinas reference baseline.</p>
+
+</main>
+
+<footer><span>El Oasis</span> &middot; Tides &middot; Littoral Checklist</footer>
+</body>
+</html>

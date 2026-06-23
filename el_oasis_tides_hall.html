@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tides — El Oasis, Guanacaste</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Josefin+Sans:wght@100;300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --jungle:#1a2e1a;
+  --canopy:#243824;
+  --moss:#2f4a2f;
+  --gold:#c8a84b;
+  --cream:#f0ead8;
+  --text-dim:rgba(240,234,216,0.58);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background-color:var(--jungle);
+  color:var(--cream);
+  font-family:'Josefin Sans',sans-serif;
+  font-weight:300;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 20% 15%, rgba(47,74,47,0.25) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 85% 85%, rgba(36,56,36,0.3) 0%, transparent 60%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;
+  z-index:0;
+}
+header{
+  position:relative;
+  z-index:10;
+  text-align:center;
+  padding:4.2rem 2rem 3rem;
+  border-bottom:1px solid rgba(200,168,75,0.2);
+}
+.back-link{
+  display:inline-flex;
+  align-items:center;
+  gap:.4rem;
+  font-size:.6rem;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--text-dim);
+  text-decoration:none;
+  margin-bottom:1.6rem;
+  transition:color .2s;
+}
+.back-link:hover{color:var(--gold)}
+.eyebrow{
+  font-size:.62rem;
+  letter-spacing:.32em;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:1rem;
+}
+h1{
+  font-family:'Cormorant Garamond',serif;
+  font-weight:300;
+  font-size:clamp(2.6rem,6vw,4.2rem);
+  letter-spacing:.03em;
+  color:var(--cream);
+  line-height:1.1;
+}
+.hall-rule{
+  width:54px;
+  height:1px;
+  background:var(--gold);
+  margin:1.3rem auto;
+  opacity:.6;
+}
+.hall-intro{
+  max-width:560px;
+  margin:0 auto;
+  font-family:'Cormorant Garamond',serif;
+  font-weight:300;
+  font-size:1.15rem;
+  line-height:1.7;
+  color:var(--text-dim);
+}
+main{
+  position:relative;
+  z-index:10;
+  max-width:980px;
+  margin:0 auto;
+  padding:3.5rem 2rem 4rem;
+}
+.sub-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
+  gap:1.4rem;
+}
+.sub-card{
+  display:flex;
+  flex-direction:column;
+  background:var(--canopy);
+  border:1px solid var(--moss);
+  border-radius:2px;
+  padding:2rem 1.8rem 1.7rem;
+  text-decoration:none;
+  color:var(--cream);
+  transition:border-color .25s, transform .25s;
+  position:relative;
+  overflow:hidden;
+}
+.sub-card:hover{border-color:var(--gold);transform:translateY(-2px)}
+.sub-card.placeholder{opacity:.55;cursor:default}
+.sub-card.placeholder:hover{border-color:var(--moss);transform:none}
+.sub-num{
+  font-family:'Josefin Sans',sans-serif;
+  font-size:.62rem;
+  letter-spacing:.24em;
+  color:var(--gold);
+  margin-bottom:.9rem;
+}
+.sub-card h3{
+  font-family:'Cormorant Garamond',serif;
+  font-weight:500;
+  font-size:1.55rem;
+  margin-bottom:.65rem;
+  color:var(--cream);
+}
+.sub-card p{
+  font-family:'Cormorant Garamond',serif;
+  font-weight:300;
+  font-size:1rem;
+  line-height:1.55;
+  color:var(--text-dim);
+  flex-grow:1;
+  margin-bottom:1.2rem;
+}
+.sub-arrow{
+  font-size:.6rem;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--gold);
+  display:inline-flex;
+  align-items:center;
+  gap:.4rem;
+}
+.sub-card:hover .sub-arrow{gap:.6rem}
+footer{
+  position:relative;
+  z-index:10;
+  text-align:center;
+  padding:2.4rem;
+  font-size:.6rem;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:var(--text-dim);
+  border-top:1px solid rgba(200,168,75,0.15);
+}
+footer span{color:var(--gold)}
+@media(max-width:640px){
+  header{padding:3rem 1.5rem 2.2rem}
+  main{padding:2.5rem 1.2rem 3rem}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="el_oasis_lobby_9_1.html">&larr; Back to Lobby</a>
+  <div class="eyebrow">Hall IV &middot; Condominio El Oasis &middot; Playa Hermosa, Guanacaste</div>
+  <h1>Tides</h1>
+  <div class="hall-rule"></div>
+  <p class="hall-intro">SINAMOT tide data for the property's reference station, the shoreline life it uncovers at low water, and a field checklist for tracking what you find.</p>
+</header>
+
+<main>
+  <div class="sub-grid">
+
+    <a class="sub-card" href="el_oasis_tide_chart.html">
+      <span class="sub-num">I</span>
+      <h3>Tide Chart</h3>
+      <p>Seven months charted from the Puntarenas/Nacascolo reference station &mdash; daily highs and lows, moon phase, and a "right now" strip for planning a walk on the flats.</p>
+      <span class="sub-arrow">Enter &rarr;</span>
+    </a>
+
+    <a class="sub-card" href="at_the_edge_of_the_sea_v2.html">
+      <span class="sub-num">II</span>
+      <h3>At the Edge of the Sea</h3>
+      <p>A photographic field record of the rocky intertidal &mdash; birds, reptiles, and landscape studies made at low tide along the Playa Hermosa shore.</p>
+      <span class="sub-arrow">Enter &rarr;</span>
+    </a>
+
+    <a class="sub-card" href="el_oasis_littoral_checklist.html">
+      <span class="sub-num">III</span>
+      <h3>Littoral Checklist</h3>
+      <p>Barnacles to brittle stars &mdash; the rocky intertidal species record for this stretch of coast, with zones and seasonal notes drawn from the regional baseline survey.</p>
+      <span class="sub-arrow">Enter &rarr;</span>
+    </a>
+
+  </div>
+</main>
+
+<footer><span>El Oasis</span> &middot; Tides &middot; Playa Hermosa, Guanacaste</footer>
+</body>
+</html>

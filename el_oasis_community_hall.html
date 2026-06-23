@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Community — El Oasis, Playa Hermosa</title>
+<style>
+  :root {
+    --jungle: #1a2e1a;
+    --jungle-deep: #0f1d10;
+    --gold: #c8a84b;
+    --gold-soft: #e3cd8a;
+    --parchment: #f3ede0;
+    --mist: #cdd9c8;
+    --tide-low: #7fb5a8;
+    --tide-high: #c8694b;
+    --shadow: rgba(0,0,0,0.45);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--jungle-deep);
+    color: var(--parchment);
+    font-family: 'Josefin Sans', sans-serif;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, .display {
+    font-family: 'Cormorant Garamond', 'Georgia', serif;
+  }
+
+  a { color: inherit; }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+  /* ---------- TOP NAV ---------- */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgba(15,29,16,0.92);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid rgba(200,168,75,0.18);
+    padding: 0.9rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .topbar .back-link {
+    text-decoration: none;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold-soft);
+    opacity: 0.85;
+    transition: opacity 0.3s ease;
+  }
+  .topbar .back-link:hover { opacity: 1; }
+
+  .topbar .hall-mark {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--mist);
+    opacity: 0.7;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    position: relative;
+    padding: 5rem 1.5rem 3.5rem;
+    text-align: center;
+    border-bottom: 1px solid rgba(200,168,75,0.14);
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 50% 0%, rgba(127,181,168,0.12), transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    font-size: 0.74rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--gold-soft);
+    opacity: 0.85;
+    margin-bottom: 1.1rem;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.6rem, 7vw, 4.4rem);
+    font-weight: 500;
+    color: var(--parchment);
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero h1 em { font-style: italic; color: var(--gold-soft); }
+
+  .hero p.tagline {
+    margin-top: 0.9rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--mist);
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero .source-note {
+    margin-top: 1.6rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: var(--mist);
+    opacity: 0.6;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ---------- STATUS / WING NAV STRIP ---------- */
+  .now-strip {
+    max-width: 920px;
+    margin: -1.8rem auto 0;
+    position: relative;
+    z-index: 2;
+    background: linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015));
+    border: 1px solid rgba(200,168,75,0.22);
+    border-radius: 3px;
+    padding: 1.6rem 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.6rem;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .now-strip .now-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: opacity 0.25s ease;
+  }
+  .now-strip .now-link:hover { opacity: 0.72; }
+
+  .now-strip .now-item {
+    text-align: center;
+    min-width: 120px;
+  }
+
+  .now-strip .now-label {
+    font-size: 0.66rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold-soft);
+    opacity: 0.8;
+    margin-bottom: 0.3rem;
+  }
+
+  .now-strip .now-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    color: var(--parchment);
+  }
+
+  .now-strip .now-sub {
+    font-size: 0.74rem;
+    color: var(--mist);
+    opacity: 0.75;
+    margin-top: 0.15rem;
+  }
+
+  /* ---------- SECTIONS ---------- */
+  .section {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 4rem 1.5rem;
+  }
+
+  .section-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold-soft);
+    opacity: 0.8;
+    margin-bottom: 0.7rem;
+  }
+
+  .section h2 {
+    font-size: clamp(1.6rem, 3.4vw, 2.1rem);
+    font-weight: 500;
+    color: var(--parchment);
+    margin-bottom: 1.4rem;
+  }
+
+  .section .lede {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--mist);
+    max-width: 700px;
+    line-height: 1.6;
+    margin-bottom: 2.2rem;
+  }
+
+  /* ---------- DOCUMENT CARDS ---------- */
+  .doc-card {
+    background: linear-gradient(160deg, rgba(255,255,255,0.035), rgba(255,255,255,0.01));
+    border: 1px solid rgba(200,168,75,0.16);
+    border-radius: 2px;
+    padding: 2rem 2.2rem;
+    margin-bottom: 1.4rem;
+  }
+
+  .doc-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .doc-eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold-soft);
+    opacity: 0.78;
+  }
+
+  .doc-title {
+    font-size: 1.32rem;
+    font-weight: 500;
+    color: var(--parchment);
+    margin: 0.35rem 0 0.85rem;
+  }
+
+  .doc-desc {
+    font-size: 0.9rem;
+    line-height: 1.65;
+    color: var(--mist);
+    opacity: 0.92;
+    max-width: 740px;
+  }
+
+  .doc-links {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin-top: 1.1rem;
+  }
+
+  .doc-link {
+    font-size: 0.74rem;
+    letter-spacing: 0.04em;
+    color: var(--gold-soft);
+    border: 1px solid rgba(200,168,75,0.3);
+    padding: 0.45rem 0.95rem;
+    border-radius: 2px;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    display: inline-block;
+  }
+  .doc-link:hover { border-color: var(--gold); background: rgba(200,168,75,0.08); color: var(--parchment); }
+
+  .badge {
+    font-size: 0.64rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.75rem;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .badge-reference {
+    color: var(--tide-low);
+    border: 1px solid rgba(127,181,168,0.4);
+    background: rgba(127,181,168,0.08);
+  }
+  .badge-pending {
+    color: var(--gold-soft);
+    border: 1px solid rgba(200,168,75,0.35);
+    background: rgba(200,168,75,0.07);
+  }
+
+  .doc-note {
+    font-size: 0.82rem;
+    color: var(--mist);
+    opacity: 0.65;
+    font-style: italic;
+    margin-top: 0.7rem;
+  }
+
+  .maintainer-note {
+    margin-top: 1.6rem;
+    border: 1px dashed rgba(200,168,75,0.3);
+    border-radius: 2px;
+    padding: 1.2rem 1.6rem;
+    font-size: 0.82rem;
+    color: var(--mist);
+    opacity: 0.85;
+    line-height: 1.6;
+  }
+  .maintainer-note strong { color: var(--gold-soft); font-weight: 500; }
+
+  /* ---------- EMPTY / COMING SOON CARD ---------- */
+  .empty-card {
+    border: 1px dashed rgba(200,168,75,0.25);
+    border-radius: 2px;
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+  .empty-card p {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--mist);
+    opacity: 0.78;
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer {
+    text-align: center;
+    padding: 3rem 1.5rem 3.5rem;
+    border-top: 1px solid rgba(200,168,75,0.14);
+    color: var(--mist);
+    opacity: 0.6;
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+  }
+
+  footer .coords {
+    margin-top: 0.5rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    opacity: 0.7;
+  }
+
+  @media (max-width: 640px) {
+    .section { padding: 3rem 1.2rem; }
+    .now-strip { margin-top: -1.4rem; gap: 1rem; padding: 1.2rem 1.4rem; }
+    .doc-card { padding: 1.6rem 1.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="back-link" href="el_oasis_lobby_9_1.html">← Back to Lobby</a>
+  <div class="hall-mark">Hall I · Community</div>
+</div>
+
+<section class="hero">
+  <div class="hero-eyebrow">Governance &amp; Resources</div>
+  <h1>The <em>Community</em> Hall</h1>
+  <p class="tagline">Documents, contacts, and dues — for every owner at El Oasis</p>
+  <p class="source-note">Anchored by Ley N&deg; 7933 (Costa Rica) and El Oasis's own governing documents, gathered in one place</p>
+</section>
+
+<div class="now-strip">
+  <a class="now-link" href="#documents">
+    <div class="now-item">
+      <div class="now-label">Documents</div>
+      <div class="now-value">1 of 5</div>
+      <div class="now-sub">available now</div>
+    </div>
+  </a>
+  <a class="now-link" href="#contacts">
+    <div class="now-item">
+      <div class="now-label">Contacts</div>
+      <div class="now-value">—</div>
+      <div class="now-sub">coming soon</div>
+    </div>
+  </a>
+  <a class="now-link" href="#fees">
+    <div class="now-item">
+      <div class="now-label">Fees</div>
+      <div class="now-value">—</div>
+      <div class="now-sub">coming soon</div>
+    </div>
+  </a>
+  <a class="now-link" href="#announcements">
+    <div class="now-item">
+      <div class="now-label">Announcements</div>
+      <div class="now-value">—</div>
+      <div class="now-sub">coming soon</div>
+    </div>
+  </a>
+</div>
+
+<!-- ============ DOCUMENTS ============ -->
+<section class="section" id="documents">
+  <div class="section-label">Condominium Files</div>
+  <h2>Where the paperwork lives</h2>
+  <p class="lede">Costa Rica's national condominium law, alongside El Oasis's own governing documents as they become available. Start here before any vote, dispute, or rule change — the answer is usually already written down.</p>
+
+  <div class="doc-card">
+    <div class="doc-top">
+      <div>
+        <div class="doc-eyebrow">Costa Rica &middot; Ley N&deg; 7933 &middot; 1999 &middot; Amended 2022 (Ley 10229) &amp; 2025 (Ley 10746)</div>
+        <div class="doc-title">Ley Reguladora de la Propiedad en Condominio</div>
+      </div>
+      <span class="badge badge-reference">Reference</span>
+    </div>
+    <p class="doc-desc">The national law governing all condominium property in Costa Rica. Defines private and common areas, owner rights and obligations, fee structures, assembly voting thresholds (unanimity / 66.67% / simple majority), and the administrator's mandate. The 2022 reform reduced the threshold for amending the reglamento from unanimity to two-thirds of the total condominium value — a significant change for HOAs seeking to update governance documents.</p>
+    <div class="doc-links">
+      <a class="doc-link" href="https://www.costaricaexpertise.net/content/files/2025/11/LEY-REGULADORA-7933-DE-CONDOMINIO-EN-ESPANOL.pdf" target="_blank" rel="noopener">Full text (updated 2025) →</a>
+      <a class="doc-link" href="https://costaricalaw.com/costa-rica-legal-topics/real-estate-and-property-law/the-condominium-law-7933-full-text-spanish/" target="_blank" rel="noopener">CostaRicaLaw.com reference →</a>
+      <a class="doc-link" href="https://da.go.cr/wp-content/uploads/2016/06/Ley-de-Condominios-N%C2%B07933.pdf" target="_blank" rel="noopener">Official PDF (Defensoría) →</a>
+    </div>
+  </div>
+
+  <div class="doc-card">
+    <div class="doc-top">
+      <div>
+        <div class="doc-eyebrow">Condominio El Oasis</div>
+        <div class="doc-title">Escritura Constitutiva / Estatuto</div>
+      </div>
+      <span class="badge badge-pending">Pending upload</span>
+    </div>
+    <p class="doc-desc">The founding deed registered with the Registro Inmobiliario, establishing El Oasis as a condominium regime. Sets out the finca matriz, filiales, common areas, and the initial value apportionment between units.</p>
+    <p class="doc-note">Document to be uploaded by administrator.</p>
+  </div>
+
+  <div class="doc-card">
+    <div class="doc-top">
+      <div>
+        <div class="doc-eyebrow">Condominio El Oasis</div>
+        <div class="doc-title">Reglamento General del Condominio</div>
+      </div>
+      <span class="badge badge-pending">Pending upload</span>
+    </div>
+    <p class="doc-desc">The internal regulations governing day-to-day community life — noise, access, parking, pets, pool use, maintenance fee obligations, and sanctions. Amendable by two-thirds of total condominium value (per Ley 10229, 2022).</p>
+    <p class="doc-note">Document to be uploaded by administrator.</p>
+  </div>
+
+  <div class="doc-card">
+    <div class="doc-top">
+      <div>
+        <div class="doc-eyebrow">Condominio El Oasis</div>
+        <div class="doc-title">Reglamento de la Administración / Bylaws</div>
+      </div>
+      <span class="badge badge-pending">Pending upload</span>
+    </div>
+    <p class="doc-desc">Governs the structure and operation of the HOA board (Junta Directiva), administrator appointment, assembly procedures, and financial accountability.</p>
+    <p class="doc-note">Document to be uploaded by administrator.</p>
+  </div>
+
+  <div class="doc-card">
+    <div class="doc-top">
+      <div>
+        <div class="doc-eyebrow">Condominio El Oasis</div>
+        <div class="doc-title">HOA Rules — Internal Operating Procedures</div>
+      </div>
+      <span class="badge badge-pending">Pending upload</span>
+    </div>
+    <p class="doc-desc">Any supplementary rules adopted by assembly resolution, including irrigation schedules, pool hours, contractor access policy, and garden stewardship guidelines.</p>
+    <p class="doc-note">Documents to be compiled and uploaded.</p>
+  </div>
+
+  <div class="maintainer-note">
+    <strong>For the administrator:</strong> pending documents should be uploaded to the relevant Google Drive folder and linked here. Admin access required for upload.
+  </div>
+</section>
+
+<!-- ============ CONTACTS ============ -->
+<section class="section" id="contacts">
+  <div class="section-label">Reach the Right Person</div>
+  <h2>Coming soon</h2>
+  <p class="lede">A directory of the board, administrator, and on-property staff — who to call for what, and when.</p>
+  <div class="empty-card">
+    <p>The contact directory is being built next. Check back after it's populated.</p>
+  </div>
+</section>
+
+<!-- ============ FEES ============ -->
+<section class="section" id="fees">
+  <div class="section-label">Dues &amp; Assessments</div>
+  <h2>Coming soon</h2>
+  <p class="lede">Fee schedule, payment methods, and what your monthly maintenance dues cover.</p>
+  <div class="empty-card">
+    <p>The fee schedule will be added once current figures are confirmed.</p>
+  </div>
+</section>
+
+<!-- ============ ANNOUNCEMENTS ============ -->
+<section class="section" id="announcements">
+  <div class="section-label">What's Happening</div>
+  <h2>Coming soon</h2>
+  <p class="lede">Assembly notices, maintenance schedules, and community updates.</p>
+  <div class="empty-card">
+    <p>Nothing posted yet. Check back after the next assembly.</p>
+  </div>
+</section>
+
+<footer>
+  <div>Condominio El Oasis &nbsp;&middot;&nbsp; Playa Hermosa, Guanacaste, Costa Rica</div>
+  <div class="coords">10.5833&deg; N, 85.6667&deg; W</div>
+</footer>
+
+</body>
+</html>

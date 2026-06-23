@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>El Oasis · Plant Inventory v9</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&amp;family=Josefin+Sans:wght@300;400;600&amp;display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#0e1a0e;
+  --surface:#1a2e1a;
+  --surface2:#162614;
+  --gold:#c8a96e;
+  --gold-dim:rgba(200,169,110,0.12);
+  --gold-line:rgba(200,169,110,0.28);
+  --text:#e8dcc8;
+  --text-dim:#8a7a5a;
+  --white:#f5f0e8;
+  --radius:2px;
+  --col:1100px;
+  --red:rgba(200,60,40,0.18);
+  --red-text:#e07060;
+  --orange:rgba(200,130,40,0.18);
+  --orange-text:#d4924a;
+  --green:rgba(60,140,60,0.15);
+  --blue:rgba(80,140,200,0.15);
+  --blue-text:#7aace0;
+  --amber:rgba(200,160,60,0.15);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Josefin Sans',sans-serif;font-weight:300;}
+
+/* ── HEADER ── */
+header{background:var(--surface);border:1px solid var(--gold-line);border-bottom:none;padding:3rem 3rem 2.5rem;max-width:var(--col);margin:0 auto;}
+.eyebrow{font-size:0.6rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:0.8rem;}
+.back-link{display:inline-flex;align-items:center;gap:0.4rem;font-size:0.58rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--text-dim);text-decoration:none;margin-bottom:1.2rem;transition:color 0.2s;}
+.back-link:hover{color:var(--gold);}
+header h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3rem);font-weight:300;color:var(--white);line-height:1.1;margin-bottom:0.6rem;}
+header h1 em{font-style:italic;color:var(--gold);}
+.header-intro{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-style:italic;line-height:1.75;color:var(--text-dim);max-width:620px;margin-top:1rem;border-left:2px solid var(--gold-line);padding-left:1.2rem;}
+.header-meta{margin-top:1.4rem;display:flex;gap:2rem;flex-wrap:wrap;}
+.header-stat{font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--text-dim);}
+.header-stat span{color:var(--gold);font-size:0.85rem;display:block;margin-bottom:0.1rem;letter-spacing:0;}
+.gold-rule{width:48px;height:1px;background:var(--gold);margin:1.5rem 0 0;opacity:0.5;}
+
+/* ── CONTROLS ── */
+.controls{max-width:var(--col);margin:0 auto;background:var(--surface2);border:1px solid var(--gold-line);border-top:none;border-bottom:none;padding:1.2rem 2rem;display:flex;gap:1.2rem;flex-wrap:wrap;align-items:center;}
+.filter-label{font-size:0.55rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-dim);white-space:nowrap;}
+.filter-btn{font-family:'Josefin Sans',sans-serif;font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;background:transparent;border:1px solid var(--gold-line);color:var(--text-dim);padding:0.35rem 0.9rem;cursor:pointer;border-radius:var(--radius);transition:all 0.2s;}
+.filter-btn:hover,.filter-btn.active{background:var(--gold-dim);border-color:var(--gold);color:var(--gold);}
+.search-wrap{margin-left:auto;}
+.search-wrap input{background:transparent;border:1px solid var(--gold-line);color:var(--text);font-family:'Josefin Sans',sans-serif;font-size:0.7rem;letter-spacing:0.08em;padding:0.35rem 0.9rem;border-radius:var(--radius);outline:none;width:220px;}
+.search-wrap input::placeholder{color:var(--text-dim);}
+.search-wrap input:focus{border-color:var(--gold);}
+
+/* ── SECTION DIVIDERS ── */
+main{max-width:var(--col);margin:0 auto;background:var(--surface);border-left:1px solid var(--gold-line);border-right:1px solid var(--gold-line);padding-bottom:4rem;}
+.section-head{background:var(--bg);border-bottom:1px solid var(--gold-line);border-top:1px solid var(--gold-line);padding:1.1rem 2rem;display:flex;align-items:center;gap:1rem;}
+.section-head span{font-size:0.58rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--text-dim);white-space:nowrap;}
+.section-head::after{content:'';flex:1;height:1px;background:var(--gold-line);}
+.section-count{font-size:0.58rem;letter-spacing:0.14em;color:rgba(200,169,110,0.4);margin-left:auto;padding-right:0;}
+
+/* ── TABLE ── */
+.inv-table{width:100%;border-collapse:collapse;}
+.inv-table th{font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-dim);padding:0.7rem 1rem;text-align:left;border-bottom:1px solid var(--gold-line);background:var(--surface2);position:sticky;top:0;z-index:2;}
+.inv-table td{font-size:0.72rem;padding:0.75rem 1rem;border-bottom:1px solid rgba(200,169,110,0.1);vertical-align:top;line-height:1.5;}
+.inv-table tr{transition:background 0.15s;}
+.inv-table tr:hover td{background:var(--gold-dim);}
+.inv-table tr.hidden{display:none;}
+
+/* ── SECTION COLOURS ── */
+tr.row-established td{background:transparent;}
+tr.row-nearby td{background:var(--blue);}
+tr.row-new td{background:var(--amber);}
+tr.row-dev td{background:rgba(80,80,80,0.1);}
+
+/* ── CELL STYLES ── */
+.col-status .status-badge{display:inline-flex;gap:3px;flex-wrap:wrap;}
+.badge{font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.12rem 0.45rem;border-radius:var(--radius);border:1px solid;display:inline-block;}
+.badge-ph{background:rgba(80,140,200,0.15);border-color:rgba(80,140,200,0.4);color:#7aace0;}
+.badge-co{background:rgba(60,140,60,0.15);border-color:rgba(60,140,60,0.4);color:#6abf6a;}
+.badge-re{background:rgba(200,160,60,0.15);border-color:rgba(200,160,60,0.4);color:#c8a040;}
+.badge-id{background:rgba(160,80,160,0.15);border-color:rgba(160,80,160,0.4);color:#b07ab0;}
+.badge-as{background:rgba(160,140,60,0.15);border-color:rgba(160,140,60,0.4);color:#b0a040;}
+.badge-nb{background:rgba(80,140,200,0.15);border-color:rgba(80,140,200,0.35);color:var(--blue-text);}
+.badge-dev{background:rgba(120,120,120,0.15);border-color:rgba(120,120,120,0.35);color:#909090;}
+
+.col-common{font-family:'Cormorant Garamond',serif;font-size:0.9rem;color:var(--white);font-weight:300;}
+.col-latin{font-family:'Cormorant Garamond',serif;font-style:italic;color:rgba(200,169,110,0.7);font-size:0.78rem;}
+.col-origin{color:var(--text-dim);font-size:0.68rem;}
+
+/* Risk pills */
+.risk{font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.1rem 0.5rem;border-radius:10px;display:inline-block;font-weight:400;}
+.risk-vh{background:rgba(200,60,40,0.2);border:1px solid rgba(200,60,40,0.5);color:#e07060;}
+.risk-hi{background:rgba(200,130,40,0.2);border:1px solid rgba(200,130,40,0.5);color:#d4924a;}
+.risk-lo{background:rgba(60,140,60,0.15);border:1px solid rgba(60,140,60,0.35);color:#6abf6a;}
+.risk-as{background:rgba(160,140,60,0.15);border:1px solid rgba(160,140,60,0.4);color:#b0a040;}
+
+/* Eco / Wow dots */
+.dot-row{display:flex;gap:3px;margin-top:2px;}
+.dot{width:7px;height:7px;border-radius:50%;background:rgba(200,169,110,0.15);border:1px solid rgba(200,169,110,0.2);}
+.dot.on{background:rgba(200,169,110,0.6);border-color:rgba(200,169,110,0.8);}
+
+.col-notes{font-size:0.67rem;line-height:1.65;color:var(--text-dim);max-width:320px;}
+.col-notes em{color:rgba(200,169,110,0.55);font-style:italic;}
+.col-ref{font-size:0.62rem;color:rgba(200,169,110,0.45);font-family:'Cormorant Garamond',serif;white-space:nowrap;}
+
+/* remove badge */
+.badge-remove{background:rgba(200,60,40,0.15);border:1px solid rgba(200,60,40,0.4);color:#e07060;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.1rem 0.45rem;border-radius:var(--radius);}
+
+/* ── FOOTER ── */
+footer{max-width:var(--col);margin:0 auto;border:1px solid var(--gold-line);border-top:none;padding:1.5rem 2rem;text-align:center;font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);background:var(--surface);}
+footer span{color:var(--gold);}
+
+/* ── RESPONSIVE ── */
+@media(max-width:800px){
+  header{padding:2rem 1.2rem;}
+  .controls{padding:1rem 1.2rem;gap:0.7rem;}
+  .search-wrap{margin-left:0;width:100%;}
+  .search-wrap input{width:100%;}
+  .inv-table th:nth-child(n+6),.inv-table td:nth-child(n+6){display:none;}
+}
+</style>
+</head>
+<body>
+<header>
+<a class="back-link" href="el_oasis_garden_hall.html">&larr; Back to Garden &amp; Grounds</a>
+<div class="eyebrow">Condominio El Oasis · Playa Hermosa · Guanacaste</div>
+<h1>Garden <em>Plant Inventory</em></h1>
+<p class="header-intro">Species documented, assessed, and recommended across the garden boundary. Ecological assessments reflect observed behaviour in Guanacaste’s Tropical Dry Forest. Invasive risk ratings reflect IUCN and regional assessments for Central America.</p>
+<div class="header-meta">
+<div class="header-stat"><span>62+</span>Photo references</div>
+<div class="header-stat"><span>37</span>Established &amp; confirmed</div>
+<div class="header-stat"><span>11</span>New / assess pending</div>
+<div class="header-stat"><span>4</span>Recommended, unplanted</div>
+<div class="header-stat"><span>v9</span>Current version</div>
+</div>
+<div class="gold-rule"></div>
+</header>
+<div class="controls">
+<span class="filter-label">Section</span>
+<button class="filter-btn active" data-filter="all">All</button>
+<button class="filter-btn" data-filter="established">Established</button>
+<button class="filter-btn" data-filter="nearby">Nearby</button>
+<button class="filter-btn" data-filter="new">New / Assess</button>
+<button class="filter-btn" data-filter="dev">Development</button>
+<span class="filter-label" style="margin-left:1rem;">Risk</span>
+<button class="filter-btn" data-risk="all">All</button>
+<button class="filter-btn" data-risk="VH" style="color:var(--red-text)">Very High</button>
+<button class="filter-btn" data-risk="Hi" style="color:var(--orange-text)">High</button>
+<div class="search-wrap">
+<input id="search" placeholder="Search species, notes…" type="text"/>
+</div>
+</div>
+<main>
+<!-- ════════════════════════════════════════
+     ESTABLISHED PLANTS
+════════════════════════════════════════ -->
+<div class="section-head" id="sec-established">
+<span>Established Plants — Confirmed or Photographed in Garden</span>
+</div>
+<table class="inv-table" id="inv-table">
+<thead>
+<tr>
+<th>Status</th>
+<th>Common Name</th>
+<th>Scientific Name</th>
+<th>Origin &amp; Invasive Risk</th>
+<th>Water Requirements</th>
+<th>Eco Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<!-- ESTABLISHED rows -->
+<tr class="row-established" data-risk="Lo" data-section="established">
+<td class="col-status"><span class="badge badge-ph">Ph</span></td>
+<td class="col-common">Coconut Palm</td>
+<td class="col-latin">Cocos nucifera</td>
+<td class="col-origin"><span>Pacific Islands</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Moderate</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Coastal icon; wildlife food source. Hoffmann’s Woodpecker documented breaching intact husk to feed on flesh.</td>
+
+</tr>
+<tr class="row-established" data-risk="Lo" data-section="established">
+<td class="col-status"><span class="badge badge-ph">Ph</span></td>
+<td class="col-common">Tropical Almond</td>
+<td class="col-latin">Terminalia catappa</td>
+<td class="col-origin"><span>SE Asia</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Low–Moderate</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div></div></td>
+
+
+<td class="col-notes">Excellent shade; bird &amp; bat food. Canopy visible in main path shot.</td>
+
+</tr>
+<tr class="row-established" data-risk="Lo" data-section="established">
+<td class="col-status"><span class="badge badge-ph">Ph</span></td>
+<td class="col-common">Plumeria / Frangipani</td>
+<td class="col-latin">Plumeria sp.</td>
+<td class="col-origin"><span>Caribbean / Mexico</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Low</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Fragrant flowers; supports pollinators. Three colour forms documented. Hamadryas Cracker and Mosaic butterfly both recorded.</td>
+
+</tr>
+<tr class="row-established" data-risk="Lo" data-section="established">
+<td class="col-status"><span class="badge badge-ph">Ph</span></td>
+<td class="col-common">Banana</td>
+<td class="col-latin">Musa sp.</td>
+<td class="col-origin"><span>SE Asia</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Very High</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Fruit; large tropical aesthetic; very water hungry. Boat-billed Flycatcher and hummingbirds documented.</td>
+
+</tr>
+<tr class="row-established" data-risk="Lo" data-section="established">
+<td class="col-status"><span class="badge badge-ph">Ph</span></td>
+<td class="col-common">Ti Plant / Cordyline</td>
+<td class="col-latin">Cordyline fruticosa</td>
+<td class="col-origin"><span>Pacific Islands</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Moderate</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Dramatic red/bronze foliage. No dedicated close-up — see Shoot List D.</td>
+
+</tr>
+<tr class="row-established" data-risk="Lo" data-section="established">
+<td class="col-status"><span class="badge badge-ph">Ph</span></td>
+<td class="col-common">Croton</td>
+<td class="col-latin">Codiaeum variegatum</td>
+<td class="col-origin"><span>SE Asia</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Moderate</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Vivid multicoloured foliage. No dedicated close-up — see Shoot List D.</td>
+
+</tr>
+<tr class="row-established" data-risk="Lo" data-section="established">
+<td class="col-status"><span class="badge badge-ph">Ph</span></td>
+<td class="col-common">Ixora</td>
+<td class="col-latin">Ixora coccinea</td>
+<td class="col-origin"><span>Asia</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Moderate</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Hummingbird &amp; butterfly attractor. <em>Heliconius</em> longwing documented nectaring. Striped Tortoise Beetle (<em>Cassidinae</em> sp.) documented — first beetle in survey.</td>
+
+</tr>
+<tr class="row-established" data-risk="VH" data-section="established">
+<td class="col-status"><span class="badge badge-ph">Ph</span></td>
+<td class="col-common">Mexican Petunia <span class="badge-remove">Remove</span></td>
+<td class="col-latin">Ruellia simplex</td>
+<td class="col-origin"><span>Mexico / S. America</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-vh">Very High</span></small></td>
+<td>Low</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">REMOVE — seriously invasive. Porterweed is a recommended native replacement. Wide extent shot needed before removal — see Shoot List D.</td>
+
+</tr>
+<tr class="row-established" data-risk="Lo" data-section="established">
+<td class="col-status"><span class="badge badge-ph">Ph</span></td>
+<td class="col-common">Firecracker Plant</td>
+<td class="col-latin">Russelia equisetiformis</td>
+<td class="col-origin"><span>Mexico</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Low</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Hummingbird favourite. Visible on raised bed wall in path shot; no dedicated frame — see Shoot List D.</td>
+
+</tr>
+<tr class="row-established" data-risk="Lo" data-section="established">
+<td class="col-status"><span class="badge badge-ph">Ph</span></td>
+<td class="col-common">Ficus Hedge</td>
+<td class="col-latin">Ficus sp.</td>
+<td class="col-origin"><span>Tropical Asia</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Moderate–High</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Neat privacy screening.</td>
+
+</tr>
+<tr class="row-established" data-risk="Lo" data-section="established">
+<td class="col-status"><span class="badge badge-ph">Ph</span></td>
+<td class="col-common">Sea Grape</td>
+<td class="col-latin">Coccoloba uvifera</td>
+<td class="col-origin"><span>Caribbean</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Low</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div></div></td>
+
+
+<td class="col-notes">Native coastal species. Stingless bees (<em>Meliponini</em>) documented foraging on the flower spike.</td>
+
+</tr>
+<tr class="row-established" data-risk="Lo" data-section="established">
+<td class="col-status"><span class="badge badge-ph">Ph</span></td>
+<td class="col-common">Queen / Date Palm</td>
+<td class="col-latin">Phoenix sp. / Syagrus sp.</td>
+<td class="col-origin"><span>Americas / Asia</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Low–Moderate</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Elegant pool-side palms. Hoffmann’s Woodpecker documented on the fruit cluster.</td>
+
+</tr>
+<tr class="row-established" data-risk="Lo" data-section="established">
+<td class="col-status"><span class="badge badge-ph">Ph</span></td>
+<td class="col-common">Fan Palm</td>
+<td class="col-latin">Livistona sp.</td>
+<td class="col-origin"><span>Asia / Australia</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Moderate</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Distinctive fan-shaped fronds. Visible mid-ground in path shot; no dedicated frame — see Shoot List D.</td>
+
+</tr>
+<tr class="row-established" data-risk="Lo" data-section="established">
+<td class="col-status"><span class="badge badge-ph">Ph</span></td>
+<td class="col-common">Pejibaye Palm</td>
+<td class="col-latin">Bactris gasipaes</td>
+<td class="col-origin"><span>C. America (Native)</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Moderate</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Pre-Columbian cultivar; one of Mesoamerica’s oldest domesticated food palms. Great-tailed Grackle (male, May) documented on cluster fruit. Female also at garden birdbath. Spiny trunk — handle with care.</td>
+
+</tr>
+<tr class="row-established" data-risk="Lo" data-section="established">
+<td class="col-status"><span class="badge badge-co">Co</span></td>
+<td class="col-common">Guanacaste / Rain Tree</td>
+<td class="col-latin">Samanea saman</td>
+<td class="col-origin"><span>S. America</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Low</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div></div></td>
+
+
+<td class="col-notes">Massive spreading canopy; confirm vs true Guanacaste tree — species ID needed. See Shoot List A.</td>
+
+</tr>
+<tr class="row-established" data-risk="Lo" data-section="established">
+<td class="col-status"><span class="badge badge-ph">Ph</span></td>
+<td class="col-common">Mango</td>
+<td class="col-latin">Mangifera indica</td>
+<td class="col-origin"><span>SE Asia</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Low–Moderate</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Non-native but naturalized; fruiting. Orange-fronted Parakeets and Yellow-naped Amazon documented feeding. Harvest before ripe.</td>
+
+</tr>
+<tr class="row-established" data-risk="Lo" data-section="established">
+<td class="col-status"><span class="badge badge-ph">Ph</span></td>
+<td class="col-common">Cashew</td>
+<td class="col-latin">Anacardium occidentale</td>
+<td class="col-origin"><span>NE Brazil</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Low</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Nearly naturalized; very drought hardy. Yellow-naped Amazon (near-threatened IUCN) and Streak-backed Oriole both documented — one of the most ecologically productive trees in the garden.</td>
+
+</tr>
+<tr class="row-established" data-risk="Lo" data-section="established">
+<td class="col-status"><span class="badge badge-ph">Ph</span></td>
+<td class="col-common">Heliconia</td>
+<td class="col-latin">Heliconia sp.</td>
+<td class="col-origin"><span>Tropical Americas</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>High</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div></div></td>
+
+
+<td class="col-notes">Primary hummingbird food; guidebook icon; high cost/high benefit. Three forms documented. Thin clumps regularly.</td>
+
+</tr>
+<tr class="row-established" data-risk="Lo" data-section="established">
+<td class="col-status"><span class="badge badge-ph">Ph</span></td>
+<td class="col-common">Philodendron</td>
+<td class="col-latin">Philodendron sp.</td>
+<td class="col-origin"><span>Tropical Americas</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Moderate</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Climber; observed on fallen tree. No photo yet — see Shoot List A.</td>
+
+</tr>
+<tr class="row-established" data-risk="Lo" data-section="established">
+<td class="col-status"><span class="badge badge-co">Co</span></td>
+<td class="col-common">Bird of Paradise</td>
+<td class="col-latin">Strelitzia sp.</td>
+<td class="col-origin"><span>South Africa</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Low</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Striking architectural flower. No photo yet — see Shoot List A.</td>
+
+</tr>
+<tr class="row-established" data-risk="Lo" data-section="established">
+<td class="col-status"><span class="badge badge-ph">Ph</span></td>
+<td class="col-common">Bougainvillea</td>
+<td class="col-latin">Bougainvillea sp.</td>
+<td class="col-origin"><span>S. America</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Very Low</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Thrives on neglect; cut hard for best flowering. Macro and cluster views documented. Also in garden wall and development shots.</td>
+
+</tr>
+<tr class="row-established" data-risk="VH" data-section="established">
+<td class="col-status"><span class="badge badge-co">Co</span></td>
+<td class="col-common">Lantana <span class="badge-remove">Replace</span></td>
+<td class="col-latin">Lantana camara</td>
+<td class="col-origin"><span>Tropical Americas</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-vh">Very High</span></small></td>
+<td>Very Low</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Outstanding butterfly attractor; globally invasive. Replace with <em>L. trifolia</em>. Document before removing — see Shoot List A.</td>
+
+</tr>
+<tr class="row-established" data-risk="VH" data-section="established">
+<td class="col-status"><span class="badge badge-ph">Ph</span></td>
+<td class="col-common">Guava</td>
+<td class="col-latin">Psidium guajava</td>
+<td class="col-origin"><span>Tropical Americas</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-vh">Very High</span></small></td>
+<td>Low–Moderate</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Edible fruit; bird-dispersed. Variegated Squirrel documented mid-feed. Multiple dispersal pathways confirmed. Harvest before ripe.</td>
+
+</tr>
+<tr class="row-established" data-risk="Lo" data-section="established">
+<td class="col-status"><span class="badge badge-ph">Ph</span></td>
+<td class="col-common">Noche Buena / Poinsettia</td>
+<td class="col-latin">Euphorbia pulcherrima</td>
+<td class="col-origin"><span>Mexico / C. America</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Low–Moderate</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Spectacular dry-season bloomer; native to region.</td>
+
+</tr>
+<tr class="row-established" data-risk="Lo" data-section="established">
+<td class="col-status"><span class="badge badge-ph">Ph</span></td>
+<td class="col-common">Bottlebrush</td>
+<td class="col-latin">Callistemon citrinus</td>
+<td class="col-origin"><span>Australia</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Very Low</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Outstanding hummingbird plant; cut hard for best flowering. Removed from villa-side bed May 2026 for hummingbird project.</td>
+
+</tr>
+<tr class="row-established" data-risk="VH" data-section="established">
+<td class="col-status"><span class="badge badge-ph">Ph</span></td>
+<td class="col-common">Bengal Clock Vine</td>
+<td class="col-latin">Thunbergia grandiflora</td>
+<td class="col-origin"><span>India / SE Asia</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-vh">Very High</span></small></td>
+<td>Moderate</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Stunning lavender flowers; very hard to contain — deadhead before seed set. Native alternative: <em>Passiflora</em>.</td>
+
+</tr>
+<tr class="row-established" data-risk="Lo" data-section="established">
+<td class="col-status"><span class="badge badge-co">Co</span></td>
+<td class="col-common">Papaya</td>
+<td class="col-latin">Carica papaya</td>
+<td class="col-origin"><span>C. America</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Low–Moderate</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Productive; zero invasive risk; birds love fruit. No photo yet — see Shoot List A.</td>
+
+</tr>
+<tr class="row-established" data-risk="Lo" data-section="established">
+<td class="col-status"><span class="badge badge-ph">Ph</span></td>
+<td class="col-common">Epiphyllum</td>
+<td class="col-latin">Epiphyllum sp.</td>
+<td class="col-origin"><span>C. America</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Very Low</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Orange irregular blooms; balcony plant; thrives on pure neglect. No dedicated photo yet — see Shoot List A.</td>
+
+</tr>
+<tr class="row-established" data-risk="Lo" data-section="established">
+<td class="col-status"><span class="badge badge-ph">Ph</span></td>
+<td class="col-common">Agave</td>
+<td class="col-latin">Agave sp.</td>
+<td class="col-origin"><span>Mexico / C. America</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Zero</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Indestructible; low ecological value vegetatively. Flowering event documented with insect visitor — apparently does something after all.</td>
+
+</tr>
+<tr class="row-established" data-risk="Lo" data-section="established">
+<td class="col-status"><span class="badge badge-ph">Ph</span> <span class="badge badge-re">Re</span></td>
+<td class="col-common">Porterweed</td>
+<td class="col-latin">Stachytarpheta sp.</td>
+<td class="col-origin"><span>C. America (Native)</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Very Low</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div></div></td>
+
+
+<td class="col-notes">Exceptional butterfly &amp; hummingbird magnet; native replacement for Mexican Petunia. Three butterfly species documented. Newly planted in villa-side bed.</td>
+
+</tr>
+<tr class="row-established" data-risk="Lo" data-section="established">
+<td class="col-status"><span class="badge badge-re">Re</span></td>
+<td class="col-common">Firebush</td>
+<td class="col-latin">Hamelia patens</td>
+<td class="col-origin"><span>Native C. America</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Low</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div></div></td>
+
+
+<td class="col-notes">Most underused native in Guanacaste; outstanding hummingbird plant. No photo yet — see Shoot List A.</td>
+
+</tr>
+<tr class="row-established" data-risk="Lo" data-section="established">
+<td class="col-status"><span class="badge badge-ph">Ph</span></td>
+<td class="col-common">Costus / Spiral Ginger</td>
+<td class="col-latin">Costus sp.</td>
+<td class="col-origin"><span>Tropical Americas</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Moderate</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Heliconia relative; similar look at lower water cost. Insects documented in bracts.</td>
+
+</tr>
+<tr class="row-established" data-risk="Lo" data-section="established">
+<td class="col-status"><span class="badge badge-co">Co</span></td>
+<td class="col-common">Torch Ginger</td>
+<td class="col-latin">Etlingera elatior</td>
+<td class="col-origin"><span>SE Asia</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Moderate</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Spectacular; similar vibe to Heliconia. No photo yet — see Shoot List A.</td>
+
+</tr>
+<tr class="row-established" data-risk="Lo" data-section="established">
+<td class="col-status"><span class="badge badge-co">Co</span></td>
+<td class="col-common">Shrimp Plant</td>
+<td class="col-latin">Justicia brandegeana</td>
+<td class="col-origin"><span>Mexico</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Low</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Long-lasting bracts; hummingbirds love it. No photo yet — see Shoot List A.</td>
+
+</tr>
+<tr class="row-established" data-risk="Lo" data-section="established">
+<td class="col-status"><span class="badge badge-re">Re</span></td>
+<td class="col-common">Prickly Pear</td>
+<td class="col-latin">Opuntia sp.</td>
+<td class="col-origin"><span>Americas (Native)</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Zero</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Native dry forest; edible fruit; wildlife value; recommended Agave replacement. Not yet planted — see Shoot List E.</td>
+
+</tr>
+<tr class="row-established" data-risk="Lo" data-section="established">
+<td class="col-status"><span class="badge badge-re">Re</span></td>
+<td class="col-common">Pitaya / Dragon Fruit</td>
+<td class="col-latin">Hylocereus undatus</td>
+<td class="col-origin"><span>C. America</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Very Low</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Spectacular night blooms; edible fruit; naturalized in Guanacaste. Not yet planted — see Shoot List E.</td>
+
+</tr>
+<tr class="row-established" data-risk="Lo" data-section="established">
+<td class="col-status"><span class="badge badge-re">Re</span></td>
+<td class="col-common">Cas</td>
+<td class="col-latin">Psidium friedrichsthalianum</td>
+<td class="col-origin"><span>Costa Rica (Native)</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Low</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Native cousin of Guava; zero invasive risk. Not yet planted — see Shoot List E.</td>
+
+</tr>
+<tr class="row-established" data-risk="Lo" data-section="established">
+<td class="col-status"><span class="badge badge-re">Re</span> <span class="badge badge-ph">Ph</span></td>
+<td class="col-common">Native Lantana</td>
+<td class="col-latin">Lantana trifolia</td>
+<td class="col-origin"><span>C. America (Native)</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Very Low</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Native alternative to invasive <em>L. camara</em>. Newly planted in villa-side bed May 2026.</td>
+
+</tr>
+<tr class="row-established" data-risk="Lo" data-section="established">
+<td class="col-status"><span class="badge badge-re">Re</span></td>
+<td class="col-common">Passiflora</td>
+<td class="col-latin">Passiflora sp.</td>
+<td class="col-origin"><span>C. America (Native)</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Low–Moderate</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div></div></td>
+
+
+<td class="col-notes">Native alternative to Bengal Clock Vine; butterfly larvae host; edible fruit. Not yet planted — see Shoot List E.</td>
+
+</tr>
+<tr class="row-established" data-risk="Lo" data-section="established">
+<td class="col-status"><span class="badge badge-ph">Ph</span></td>
+<td class="col-common">Oleander</td>
+<td class="col-latin">Nerium oleander</td>
+<td class="col-origin"><span>Mediterranean</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Very Low</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Widely naturalized; toxic throughout — handle with care. Pink form documented. Pollinator value mainly wasps. Confirm boundary status.</td>
+
+</tr>
+<tr class="row-established" data-risk="Lo" data-section="established">
+<td class="col-status"><span class="badge badge-ph">Ph</span></td>
+<td class="col-common">Duranta / Sky Flower</td>
+<td class="col-latin">Duranta erecta</td>
+<td class="col-origin"><span>C. America / Caribbean</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Low</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Lilac-purple small flowers; good wasp and bee attractor. Paper Wasp (<em>Polistes</em> sp.) documented foraging on flowers. Fruiting berries attract birds.</td>
+
+</tr>
+<!-- ════ NEARBY ════ -->
+<tr>
+<td colspan="10" style="padding:0;">
+<div class="section-head" id="sec-nearby">
+<span>Nearby — Outside Garden Boundary</span>
+</div>
+</td>
+</tr>
+<tr class="row-nearby" data-risk="Lo" data-section="nearby">
+<td class="col-status"><span class="badge badge-ph">Ph</span> <span class="badge badge-nb">Nearby</span></td>
+<td class="col-common">Pride of Barbados</td>
+<td class="col-latin">Caesalpinia pulcherrima</td>
+<td class="col-origin"><span>SE Mexico / C. America (Native)</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Low</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div></div></td>
+
+
+<td class="col-notes">Road verge outside garden boundary. Gulf Fritillary documented. Strong candidate for introduction; low invasive risk within native range.</td>
+
+</tr>
+<!-- ════ NEW / ASSESS ════ -->
+<tr>
+<td colspan="10" style="padding:0;">
+<div class="section-head" id="sec-new">
+<span>New Entries — Photographed in Survey Area; Assessment Pending</span>
+</div>
+</td>
+</tr>
+<tr class="row-new" data-risk="Lo" data-section="new">
+<td class="col-status"><span class="badge badge-ph">Ph</span></td>
+<td class="col-common">White Buttercup / Mariposa Blanca</td>
+<td class="col-latin">Turnera subulata</td>
+<td class="col-origin"><span>C. America (Native)</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Low</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">New entry — to be added. White petals, dark centre. Known as Politicians’ Flower. Strong groundcover/border candidate.</td>
+
+</tr>
+<tr class="row-new" data-risk="Lo" data-section="new">
+<td class="col-status"><span class="badge badge-id">ID Pending</span></td>
+<td class="col-common">Unidentified Groundcover</td>
+<td class="col-latin">Species unknown</td>
+<td class="col-origin"><span>Unknown</span></td>
+<td>—</td>
+<td><div class="dot-row"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Beneath welcome gazebo. Possibly <em>Portulaca</em>, <em>Bacopa</em> (native), Sweet Alyssum, or <em>Euphorbia</em>. Priority ID task — see Shoot List C.</td>
+
+</tr>
+<tr class="row-new" data-risk="Lo" data-section="new">
+<td class="col-status"><span class="badge badge-ph">Ph</span> <span class="badge badge-as">Assess</span></td>
+<td class="col-common">Celosia / Cockscomb</td>
+<td class="col-latin">Celosia argentea var. plumosa</td>
+<td class="col-origin"><span>Tropical Africa / Asia</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Low</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Ornamental annual; low invasive risk; moderate pollinator value. Full lifecycle documented. Flagged for assessment.</td>
+
+</tr>
+<tr class="row-new" data-risk="Lo" data-section="new">
+<td class="col-status"><span class="badge badge-ph">Ph</span> <span class="badge badge-as">Assess</span></td>
+<td class="col-common">Bauhinia / Orchid Tree</td>
+<td class="col-latin">Bauhinia sp.</td>
+<td class="col-origin"><span>Tropical Asia</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Low–Moderate</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Moderate pollinator value; low invasive risk. Flagged for assessment.</td>
+
+</tr>
+<tr class="row-new" data-risk="Lo" data-section="new">
+<td class="col-status"><span class="badge badge-ph">Ph</span> <span class="badge badge-as">Assess</span></td>
+<td class="col-common">Zinnia</td>
+<td class="col-latin">Zinnia sp.</td>
+<td class="col-origin"><span>Mexico (cultivated)</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Low</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Pollinator-support annual. White Peacock butterfly documented. Flagged for assessment.</td>
+
+</tr>
+<tr class="row-new" data-risk="Lo" data-section="new">
+<td class="col-status"><span class="badge badge-ph">Ph</span> <span class="badge badge-as">Assess</span></td>
+<td class="col-common">Hibiscus (Red &amp; Pink forms)</td>
+<td class="col-latin">Hibiscus sp.</td>
+<td class="col-origin"><span>Tropical Asia</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Moderate</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Two colour forms established. Brimstone butterfly documented on red form. Flagged for assessment.</td>
+
+</tr>
+<tr class="row-new" data-risk="Lo" data-section="new">
+<td class="col-status"><span class="badge badge-ph">Ph</span> <span class="badge badge-as">Assess</span></td>
+<td class="col-common">Red Ginger</td>
+<td class="col-latin">Alpinia purpurata</td>
+<td class="col-origin"><span>SE Asia / Pacific</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Moderate</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Good hummingbird value; fourth ginger-family entry. Flagged for assessment.</td>
+
+</tr>
+<tr class="row-new" data-risk="Lo" data-section="new">
+<td class="col-status"><span class="badge badge-ph">Ph</span> <span class="badge badge-as">Assess</span></td>
+<td class="col-common">Cereus / Columnar Cactus</td>
+<td class="col-latin">Cereus sp. / Pilosocereus sp.</td>
+<td class="col-origin"><span>Americas</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Very Low</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Boundary fence location. Nesting sites for birds; fruit for wildlife. Flagged for assessment.</td>
+
+</tr>
+<tr class="row-new" data-risk="As" data-section="new">
+<td class="col-status"><span class="badge badge-ph">Ph</span> <span class="badge badge-as">Assess</span></td>
+<td class="col-common">Morning Glory</td>
+<td class="col-latin">Ipomoea sp.</td>
+<td class="col-origin"><span>Tropical Americas</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-as">Assess</span></small></td>
+<td>Low–Moderate</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Species ID required — genus ranges from native to seriously invasive. Do not plant further until identified.</td>
+
+</tr>
+<tr class="row-new" data-risk="Lo" data-section="new">
+<td class="col-status"><span class="badge badge-ph">Ph</span> <span class="badge badge-as">Assess</span></td>
+<td class="col-common">Bidens / Shepherd’s Needle</td>
+<td class="col-latin">Bidens pilosa</td>
+<td class="col-origin"><span>Tropical Americas (Native)</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Low</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div></div></td>
+
+
+<td class="col-notes">One of the most ecologically productive plants in the survey area. Four butterfly species documented. Urgently flagged for inventory.</td>
+
+</tr>
+<tr class="row-new" data-risk="Lo" data-section="new">
+<td class="col-status"><span class="badge badge-ph">Ph</span> <span class="badge badge-id">ID Pending</span></td>
+<td class="col-common">UFO — Scarlet Canopy Tree (Beach)</td>
+<td class="col-latin">Delonix regia or Erythrina sp.</td>
+<td class="col-origin"><span>Uncertain</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Low</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Flamboyán vs Poro — identity contested. If Poro (native), significant survey addition. Priority ID task — see Shoot List C.</td>
+
+</tr>
+<tr class="row-new" data-risk="Lo" data-section="new">
+<td class="col-status"><span class="badge badge-ph">Ph</span> <span class="badge badge-id">ID Pending</span></td>
+<td class="col-common">Gumbo Limbo (poss.)</td>
+<td class="col-latin">Bursera simaruba?</td>
+<td class="col-origin"><span>C. America (Native)</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>—</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div></div></td>
+
+
+<td class="col-notes">ID inferred from bark character in Variegated Squirrel portrait (May): smooth, reddish-brown, papery-peeling texture consistent with Gumbo Limbo (“tourist tree”). Native dry forest species; high ecological value if confirmed. Priority ID task — inspect bark and leaf in situ.</td>
+
+</tr>
+<!-- ════ DEVELOPMENT RECORDS ════ -->
+<tr>
+<td colspan="10" style="padding:0;">
+<div class="section-head" id="sec-dev">
+<span>Development Records — Hummingbird Project 2026</span>
+</div>
+</td>
+</tr>
+<tr class="row-dev" data-risk="Lo" data-section="dev">
+<td class="col-status"><span class="badge badge-ph">Ph</span> <span class="badge badge-dev">Dev</span></td>
+<td class="col-common">Villa Side Bed: Before State</td>
+<td class="col-latin">Acalypha hispida (prob.) + Callistemon citrinus</td>
+<td class="col-origin"><span>Tropical Asia / Australia</span></td>
+<td>—</td>
+<td><div class="dot-row"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Before-removal record. Replaced by species rated collectively higher for hummingbird value.</td>
+
+</tr>
+<tr class="row-dev" data-risk="Lo" data-section="dev">
+<td class="col-status"><span class="badge badge-ph">Ph</span> <span class="badge badge-dev">Dev</span></td>
+<td class="col-common">Villa Side Bed: Phase One Complete</td>
+<td class="col-latin">Bougainvillea + Porterweed + Native Lantana</td>
+<td class="col-origin"><span>S. America / C. America (Native)</span><br/><small style="margin-top:2px;display:block;"><span class="risk risk-lo">Low</span></small></td>
+<td>Very Low</td>
+<td><div class="dot-row"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div></div></td>
+
+
+<td class="col-notes">Hummingbird Project Phase One complete. New tiled raised planters. Year-round nectar at villa entrance.</td>
+
+</tr>
+</tbody>
+</table>
+</main>
+<footer>
+<span>El Oasis</span> · Plant Inventory v9 · Playa Hermosa, Guanacaste ·
+  Species identifications provisional pending expert review
+</footer>
+<script>
+// ── FILTER LOGIC ──
+const rows = document.querySelectorAll('tbody tr[data-section]');
+let activeSection = 'all';
+let activeRisk = 'all';
+let searchQuery = '';
+
+function applyFilters(){
+  rows.forEach(row => {
+    const sec = row.dataset.section;
+    const risk = row.dataset.risk;
+    const text = row.textContent.toLowerCase();
+    const secOk = activeSection === 'all' || sec === activeSection;
+    const riskOk = activeRisk === 'all' || risk === activeRisk;
+    const searchOk = !searchQuery || text.includes(searchQuery);
+    row.classList.toggle('hidden', !(secOk && riskOk && searchOk));
+  });
+  // hide section headers if all their rows are hidden
+  document.querySelectorAll('tr:not([data-section])').forEach(hrow => {
+    const id = hrow.querySelector('[id]');
+    if(!id) return;
+    const sec = id.id.replace('sec-','');
+    const visible = [...rows].some(r => r.dataset.section === sec && !r.classList.contains('hidden'));
+    hrow.style.display = visible ? '' : 'none';
+  });
+}
+
+document.querySelectorAll('[data-filter]').forEach(btn => {
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('[data-filter]').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    activeSection = btn.dataset.filter;
+    applyFilters();
+  });
+});
+
+document.querySelectorAll('[data-risk]').forEach(btn => {
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('[data-risk]').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    activeRisk = btn.dataset.risk;
+    applyFilters();
+  });
+});
+
+document.getElementById('search').addEventListener('input', e => {
+  searchQuery = e.target.value.toLowerCase().trim();
+  applyFilters();
+});
+</script>
+</body>
+</html>
